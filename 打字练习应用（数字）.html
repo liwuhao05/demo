@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>数字打字机</title>
+<style>
+	body{
+		background:#abdcef;
+	}
+	#container{
+		text-align:center;
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		width:300px;
+		height:300px;
+		margin:auto;
+	}
+	#teacher{
+		border:1px solid #abcdef;
+		background:#000;
+		color:#fff;
+		font-size:16px;
+		width:50px;
+		height:15px;
+		padding::;
+	}
+	#student{
+		width:55px;
+		font-size:16px;
+		border:1px solid #ff6700;
+		color:#ff6700;
+		padding:5px;
+		margin-left:-40px;
+	}
+	#screen{
+		width:30px;
+		height:30px;
+		background:red;
+		margin-left:10px;
+		display:inline-block;
+		position:absolute;
+	}
+	#result{
+		background:#fff;
+		width:125px;
+		height:110px;
+		color:black;
+		font-size:16px;
+		display:inline-block;
+	}
+</style>
+</head>
+<body>
+	<div id="container">
+		<div style="text-align:center;">
+			<input type="text" id="teacher" disabled value="准备…">
+		</div>
+		<div style="position:relative;margin-top:15px">
+			<input type="text" id="student" value="">
+			<div id="screen"></div>
+			<br>
+			<div id="result"></div>
+		</div>
+		<span>滑动选取速率，在此点击橙色框开始测验</spanspan>
+		<form oninput="out.value=range.value">
+			<input type="range" id="speed" name="range" min=1 max=9 value=7>
+			<output name="out"></output>
+		</form>
+		<input type="button" id="button" value="暂停">
+	</div>
+	<script>
+		window.onload=function(){
+			let teacher = document.getElementById("teacher");
+			let student = document.getElementById("student");
+			let screen = document.getElementById("screen");
+			let result = document.getElementById("result");
+			let speed = document.getElementById("speed");
+			let button = document.getElementById("button");
+			let num = 0;
+			total = 0;
+			let right = 0;
+			let wrong = 0;
+			let persents = 0;
+			let timer;
+			let flag = false;
+			function examine(flag){
+				if(flag){
+					clearInterval(timer);
+				}else{
+					clearInterval(timer);
+					sp=10000-parseInt(speed.value)*1000;
+					timer =	setInterval(function(){
+						if(parseInt(student.value)==parseInt(teacher.value)){
+							right+=1;
+						}else{
+							wrong+=1;
+						}
+						num = Math.floor(Math.random()*99999);
+						teacher.value=num;
+						student.value="";
+						total+=1;
+						persents = parseFloat(right/total).toFixed(2).slice(2,4)+"%";
+						result.innerHTML="试炼总数为："+total+"<br>"+"<font green>打对次数为："+right+"</font><br>"+"<font red>打错次数为："+wrong+"</font><br>"+"<font #abcdef>正确率："+persents+"</font>";
+					},sp);
+				}
+			}
+			student.onkeyup=function(){
+				if(parseInt(student.value)==parseInt(teacher.value)){
+					screen.style.backgroundColor="green";
+				}else{
+					screen.style.backgroundColor="red";
+				}
+			}
+			button.onclick=function(){
+				if(!flag){
+					button.value="暂停";
+					examine(flag);
+					flag=true;
+
+				}else{
+					button.value="开始";
+					examine(flag);
+					flag=false;
+				}
+			}
+			speed.onblur=function(){
+				examine(false);
+			}
+		}
+	</script>
+</body>
+</html>
